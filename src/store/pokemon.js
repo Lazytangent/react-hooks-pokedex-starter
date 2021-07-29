@@ -19,6 +19,43 @@ const addOnePokemon = pokemon => ({
   pokemon,
 });
 
+export const getSinglePokemon = (id) => async dispatch => {
+  const response = await fetch(`/api/pokemon/${id}`);
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+  }
+};
+
+export const createPokemon = (payload) => async dispatch => {
+  const response = await fetch('/api/pokemon', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+    return pokemon;
+  }
+};
+
+export const editPokemon = (payload) => async dispatch => {
+  const response = await fetch(`/api/pokemon/${payload.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+    return pokemon;
+  }
+};
+
 export const getPokemon = () => async dispatch => {
   const response = await fetch(`/api/pokemon`);
 
