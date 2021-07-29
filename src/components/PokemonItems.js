@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPokemonItems } from '../store/items';
+
+import { getPokemonItems, deleteItem } from '../store/items';
 
 const PokemonItems = ({ pokemon, setEditItemId }) => {
   const dispatch = useDispatch();
@@ -18,25 +19,30 @@ const PokemonItems = ({ pokemon, setEditItemId }) => {
   }
 
   return items.map((item) => (
-    <tr key={item.id}>
-      <td>
-        <img
-          className="item-image"
-          alt={item.imageUrl}
-          src={`${item.imageUrl}`}
-        />
-      </td>
-      <td>{item.name}</td>
-      <td className="centered">{item.happiness}</td>
-      <td className="centered">${item.price}</td>
-      {pokemon.captured && (
-        <td className="centered">
-          <button onClick={() => setEditItemId(item.id)}>
-            Edit
-          </button>
+    <>
+      {item && <tr key={item.id}>
+        <td>
+          <img
+            className="item-image"
+            alt={item.imageUrl}
+            src={`${item.imageUrl}`}
+          />
         </td>
-      )}
-    </tr>
+        <td>{item.name}</td>
+        <td className="centered">{item.happiness}</td>
+        <td className="centered">${item.price}</td>
+        {pokemon.captured && (
+          <td className="centered">
+            <button onClick={() => setEditItemId(item.id)}>
+              Edit
+            </button>
+            <button onClick={() => dispatch(deleteItem(item))}>
+              Delete
+            </button>
+          </td>
+        )}
+      </tr>}
+    </>
   ));
 };
 

@@ -42,6 +42,31 @@ export const createPokemon = (payload) => async dispatch => {
   }
 };
 
+export const getRandomEncounter = () => async dispatch => {
+  const response = await fetch('/api/pokemon/random');
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+    return pokemon;
+  }
+};
+
+export const battle = (allyId, opponentId) => async dispatch => {
+  const params = new URLSearchParams();
+  params.append('allyId', allyId);
+  params.append('opponentId', opponentId);
+  const url = `/api/pokemon/battle?${params.toString()}`;
+
+  const response = await fetch(url);
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+    return pokemon;
+  }
+};
+
 export const editPokemon = (payload) => async dispatch => {
   const response = await fetch(`/api/pokemon/${payload.id}`, {
     method: 'PUT',
@@ -137,7 +162,7 @@ const pokemonReducer = (state = initialState, action) => {
         ...state,
         [action.pokemonId]: {
           ...state[action.pokemonId],
-          items: state[action.pokemonId].filter(
+          items: state[action.pokemonId].items.filter(
             (item) => item.id !== action.itemId
           ),
         },
@@ -149,7 +174,7 @@ const pokemonReducer = (state = initialState, action) => {
         ...state,
         [action.item.pokemonId]: {
           ...state[action.item.pokemonId],
-          items: [...state[action.item.pokemonId], action.item.id],
+          items: [...state[action.item.pokemonId].items, action.item.id],
         },
       };
     }

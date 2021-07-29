@@ -48,6 +48,31 @@ export const editItem = (payload) => async dispatch => {
   }
 };
 
+export const deleteItem = (item) => async dispatch => {
+  const response = await fetch(`/api/items/${item.id}`, {
+    method: 'DELETE',
+  });
+
+  if (response.ok) {
+    const { itemId } = await response.json();
+    dispatch(remove(itemId, item.pokemonId));
+  }
+};
+
+export const addItem = (payload, pokemonId) => async dispatch => {
+  const response = await fetch(`/api/pokemon/${pokemonId}/items`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.ok) {
+    const item = await response.json();
+    dispatch(add(item));
+    return item;
+  }
+};
+
 const initialState = {};
 
 const itemsReducer = (state = initialState, action) => {
